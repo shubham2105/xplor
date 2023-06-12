@@ -1,0 +1,233 @@
+import React, { useState, useEffect } from 'react';
+import { ImageBackground, StyleSheet, View, Dimensions, Image, Animated, PanResponder, Text, TouchableOpacity } from 'react-native';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
+// Dummy Data
+const Places = [
+  { id: "1", uri: require('../assets/images/gateway.jpeg'), title: "Gateway of India" },
+  { id: "2", uri: require('../assets/images/worli_Sealink.jpeg'), title: "Worli Sealink" },
+  { id: "3", uri: require('../assets/images/marine_drives.jpeg'), title: "Marine Drives" },
+  { id: "4", uri: require('../assets/images/tajhotel.jpeg'), title: "Taj Hotel" },
+  { id: "5", uri: require('../assets/images/csmt.jpeg'), title: "CSMT" },
+];
+
+const SliderScreen = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const position = new Animated.ValueXY();
+  const [swipedRight, setSwipedRight] = useState(false);
+  const [swipedLeft, setSwipedLeft] = useState(false);
+
+  useEffect(() => {
+    position.setValue({ x: 0, y: 0 });
+    setSwipedRight(false);
+    setSwipedLeft(false);
+  }, [currentIndex]);
+
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove: (event, gesture) => {
+      position.setValue({ x: gesture.dx, y: gesture.dy });
+    },
+    onPanResponderRelease: (event, gesture) => {
+      if (gesture.dx > 120) {
+        // Swiped right
+        swipeRight();
+      } else if (gesture.dx < -120) {
+        // Swiped left
+        swipeLeft();
+      } else {
+        // Reset position
+        resetPosition();
+      }
+    },
+  });
+
+  const swipeRight = () => {
+    Animated.spring(position, {
+      toValue: { x: SCREEN_WIDTH + 100, y: 0 },
+      useNativeDriver: false,
+    }).start(() => {
+      if (currentIndex === Places.length - 1) {
+        setCurrentIndex(0);
+      } else {
+        setCurrentIndex(currentIndex + 1);
+      }
+      setSwipedRight(true);
+    });
+  };
+
+  const swipeLeft = () => {
+    Animated.spring(position, {
+      toValue: { x: -SCREEN_WIDTH - 100, y: 0 },
+      useNativeDriver: false,
+    }).start(() => {
+      if (currentIndex === Places.length - 1) {
+        setCurrentIndex(0);
+      } else {
+        setCurrentIndex(currentIndex + 1);
+      }
+      setSwipedLeft(true);
+    });
+  };
+
+  const resetPosition = () => {
+    Animated.spring(position, {
+      toValue: { x: 0, y: 0 },
+      friction: 4,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const renderPlaces = () => {
+    return Places.map((item, i) => {
+      if (i < currentIndex) {
+        return null;
+      } else if (i === currentIndex) {
+        const animatedOpacity = position.x.interpolate({
+          inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+          outputRange: [0, 1, 0],
+          extrapolate: 'clamp',
+        });
+
+        return (
+          <Animated.View
+            key={item.id}
+            style={[styles.animatedView, position.getLayout()]}
+            {...panResponder.panHandlers}
+          >
+            <Image style={styles.image} source={item.uri} />
+            <Animated.View style={[styles.textContainer, { opacity: animatedOpacity }]}>
+              <Text style={styles.titleText}>{item.title}</Text>
+            </Animated.View>
+            {swipedLeft && (
+              <Animated.Text style={[styles.overlayText, styles.nopeText, { opacity: animatedOpacity }]}>
+                Dislike
+              </Animated.Text>
+            )}
+            {swipedRight && (
+              <Animated.Text style={[styles.overlayText, styles.likeText, { opacity: animatedOpacity }]}>
+                Like
+              </Animated.Text>
+            )}
+          </Animated.View>
+        );
+      } else {
+        return (
+          <Animated.View key={item.id} style={styles.animatedView}>
+            <Image style={styles.image} source={item.uri} />
+            <View style={styles.titleContainer}>
+              <Text style={styles.titleText}>{item.title}</Text>
+            </View>
+          </Animated.View>
+        );
+      }
+    }).reverse();
+  };
+
+  const renderButtons = () => {
+    return (
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.button} onPress={swipeLeft}>
+          <FontAwesome name="ban" size={30} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={swipeRight}>
+          <AntDesign name="heart" size={30} color="white" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  return (
+    <ImageBackground source={require('../assets/Background.jpg')} style={styles.backgroundImage}>
+      <View style={styles.container}>
+        <View style={styles.precontent}></View>
+        <View style={styles.contentview}>
+          {renderPlaces()}
+        </View>
+        {renderButtons()}
+        <View style={styles.postcontent}></View>
+      </View>
+    </ImageBackground>
+  );
+};
+
+export default SliderScreen;
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
+  container: {
+    flex: 1,
+  },
+  precontent: {
+    height: 60,
+  },
+  contentview: {
+    flex: 1,
+  },
+  postcontent: {
+    height: 60,
+  },
+  animatedView: {
+    height: SCREEN_HEIGHT - 180,
+    width: SCREEN_WIDTH,
+    padding: 15,
+    position: 'absolute',
+  },
+  image: {
+    flex: 1,
+    height: null,
+    width: null,
+    resizeMode: 'cover',
+    borderRadius: 20,
+  },
+  textContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  titleText: {
+    fontSize: 40,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  buttonsContainer: {
+    position: 'relative',
+    //bottom: 30,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '60%',
+  },
+  button: {
+    backgroundColor: 'transparent',
+    borderRadius: 30,
+    padding: 10,
+  },
+  overlayText: {
+    position: 'absolute',
+    top: 20,
+    fontSize: 30,
+    fontWeight: 'bold',
+    padding: 10,
+    borderRadius: 10,
+  },
+  nopeText: {
+    left: 20,
+    color: 'red',
+  },
+  likeText: {
+    right: 20,
+    color: 'green',
+  },
+});
