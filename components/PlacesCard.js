@@ -37,10 +37,10 @@ export default PlacesCard
 const styles = StyleSheet.create({
     mainContainer:{
         width: width-50,
-        height: height-250,
+        height: height-300,
         alignSelf:"center",
         position:"absolute",
-        top:100,
+        top:120,
         borderRadius:15
     },
     cardImage:{

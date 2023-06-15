@@ -2,6 +2,17 @@ import { Animated, ImageBackground, StyleSheet, Text, View,PanResponder, Image} 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PlacesCard from '../components/PlacesCard';
 import { TouchableOpacity } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ExplorePlaces from './ExplorePlaces';
+import YourPicks from './YourPicks';
+import { NavigationContainer } from '@react-navigation/native';
+import TabNavigator from '../navigation/TabNavigator';
+
+
+
+
+//Tab Navigation
+const Tab = createBottomTabNavigator();
 
 
 
@@ -90,10 +101,10 @@ const styles = StyleSheet.create({
   buttonContainer:{
     width:"100%",
     position:"absolute",
-    bottom:40,
+    bottom:0.5,
     flexDirection:"row",
     justifyContent:"space-evenly",
-    alignItems:"center"
+    alignItems:"center",
   },
   likeButton:{
     width:70,
@@ -114,8 +125,8 @@ const styles = StyleSheet.create({
     alignItems:"center"
   },
   likeLogo:{
-    height:50,
-    width:50,
+    height:58,
+    width:58,
     tintColor:"#17B169"
   },
   nopeLogo:{

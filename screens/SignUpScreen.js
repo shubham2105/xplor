@@ -31,7 +31,7 @@ const SignUpScreen = () => {
     });
   return (
     <ImageBackground
-      source={require("../assets/Background.jpg")}
+      source={require("../assets/Background1x.jpg")}
       style={styles.backgroundImage}
     >
       <Text style={styles.connectText}>Connect{"\n"}friends</Text>

@@ -40,7 +40,7 @@ const AuthenticationButtons = () => {
       if (response?.type === "success") {
         await getUserInfo(response.authentication.accessToken);
         // Once logged in, send user to Questions
-        navigation.navigate("SliderScreen");
+        navigation.navigate("SurveyForm");
       }
       await getUserInfo();
     } else {
@@ -60,7 +60,7 @@ const AuthenticationButtons = () => {
       const user = await response.json();
       await AsyncStorage.setItem("@user", JSON.stringify(user));
       setUserInfo(user);
-      navigation.navigate("SliderScreen");
+      //navigation.navigate("SurveyForm");
     } catch (error) {
       // Handle error
     }
@@ -127,5 +127,4 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
-
 export default AuthenticationButtons;
