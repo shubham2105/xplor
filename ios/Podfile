@@ -5,6 +5,7 @@ require File.join(File.dirname(`node --print "require.resolve('@react-native-com
 pod 'Firebase', :modular_headers => true
 pod 'FirebaseCoreInternal', :modular_headers => true
 pod 'GoogleUtilities', :modular_headers => true
+pod 'RNGoogleSignin', :path => "../node_modules/@react-native-community/google-signin"
 
 require 'json'
 podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties.json'))) rescue {}

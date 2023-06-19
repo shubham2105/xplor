@@ -4,13 +4,13 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/database'
 
 const firebaseConfig =  {
-    apiKey: "AIzaSyBhSKe4XrWxODjmwJCU5AWgBKjDTY3BQT4",
-    authDomain: "xplore-app-b7726.firebaseapp.com",
-    databaseURL:'https://xplore-app-b7726-default-rtdb.firebaseio.com/',
-    projectId: "xplore-app-b7726",
-    storageBucket: "xplore-app-b7726.appspot.com",
-    messagingSenderId: "852731419472",
-    appId: "1:852731419472:web:76f7f54688574e044baa55"
+    apiKey: "AIzaSyDZ1KECDeiErKk5vmERDdbd02prSa9As3M",
+    authDomain: "xplor-f95de.firebaseapp.com",
+    databaseURL:"https://xplor-f95de-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    projectId: "xplor-f95de",
+    storageBucket: "xplor-f95de.appspot.com",
+    messagingSenderId: "117798878131",
+    appId: "1:117798878131:web:36cff0a7365e9ddda369c6"
 };
 
 firebase.initializeApp(firebaseConfig);

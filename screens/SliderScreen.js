@@ -5,8 +5,9 @@ import { TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ExplorePlaces from './ExplorePlaces';
 import YourPicks from './YourPicks';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import TabNavigator from '../navigation/TabNavigator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -17,6 +18,24 @@ const Tab = createBottomTabNavigator();
 
 
 const SliderScreen = () => {
+  const navigation = useNavigation();
+  // fetching username and email
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+
+  useEffect(() => {
+    // Retrieve userName and userEmail from AsyncStorage
+    retrieveUserData();
+  }, []);
+
+  const retrieveUserData = async () => {
+    const storedUserName = await AsyncStorage.getItem("@userName");
+    const storedUserEmail = await AsyncStorage.getItem("@userEmail");
+
+    setUserName(storedUserName);
+    setUserEmail(storedUserEmail);
+  };
+
   // Dummy Data
 const [data,setData]= useState([
   { id: "1", uri: require('../assets/images/gateway.jpeg'), title: "Gateway of India" },
@@ -80,6 +99,16 @@ const handleSelection = useCallback((direction)=>{Animated.timing(swipe,{toValue
         let dragHandlers = isFirst?panResponder.panHandlers:{};
         return (<PlacesCard item={item} isFirst={isFirst} swipe={swipe}{...dragHandlers}/>)
       }).reverse()}
+      <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",width:"90%",left:15,marginTop:50}}>
+        <Text style={{fontSize:18,color:"white"}}>The FrontEnd Guy</Text>
+        <TouchableOpacity onPress={()=>navigation.openDrawer()}>
+          <ImageBackground 
+          source={require('../assets/images/user-profile.png')}
+          style={{width:50,height:50}}
+          imageStyle={{borderRadius:25}}
+           />
+        </TouchableOpacity>
+      </View>
       <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.nopeButton} onPress={()=>{handleSelection(-1)}}>
             <Image source={require('../assets/images/cross.png')} style={styles.nopeLogo}/>
